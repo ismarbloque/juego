@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/ismarbloque/juego/issues"
   },
-  "homepage": "https://github.com/ismarbloque/juego#readme"
+  "homepage": "https://github.com/ismarbloque/juego#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
