@@ -18,6 +18,15 @@ class Jugador {
 
     }
 
+    actualizarEstado({x,y,estado,orientacion,vx,vy}){
+        this.x=x;
+        this.y=y;
+        this.estado=estado;
+        this.orientacion=orientacion;
+        this.vx=vx;
+        this.vy=vy;
+    }
+
 
 }
 

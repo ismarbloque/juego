@@ -20,7 +20,10 @@ io.on('connection',socket => {
     socket.emit('iniciar', {jugador, jugadores});
     socket.broadcast.emit('nuevo jugador', jugador);
     console.log(`Conectado jugador ${jugador.id}`);
-
+    socket.on('actualizar', estadoJugador => {
+      jugador.actualizarEstado(estadoJugador);
+      socket.broadcast.emit('actualizar',jugador);
+    });
     socket.on('disconnect', () => {
         console.log(`Juguador ${jugador.id} desconectado`);
         delete jugadores[jugador.id]

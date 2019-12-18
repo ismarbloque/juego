@@ -3,19 +3,31 @@ class GameLayer extends Layer {
     constructor() {
         super();
         this.iniciar();
+        this.jugador=null;
     }
 
     registrarEventosDelServidor(){
         socket.on('iniciar',({jugador,jugadores}) => {
-            console.log(jugador, jugadores)
+            this.cargarJugador(jugador.x,jugador.y);
+
+            for (const id in jugadores){
+                if(id!=jugador.id){
+                this.cargarEnemigo(id,jugadores[id].x, jugadores[id].y);
+                }
+            }
         })
 
         socket.on('nuevo jugador', jugador=>{
-            console.log(jugador);
+            this.cargarEnemigo(jugador.id, jugador.x,jugador.y);
+        })
+
+        socket.on('actualizar', enemigo=>{
+        this.enemigos[enemigo.id].actualizarEstado(enemigo);
+
         })
 
         socket.on('jugador desconectado', id=>{
-            console.log(id);
+            delete this.enemigos[id];
         })
     }
 
@@ -27,7 +39,7 @@ class GameLayer extends Layer {
 
         this.fondo = new Fondo(imagenes.fondo_2,480*0.5,320*0.5);
 
-        this.enemigos = [];
+        this.enemigos = {};
 
 
         this.fondoPuntos =
@@ -43,13 +55,24 @@ class GameLayer extends Layer {
         this.espacio.actualizar();
 
         // actualizar
-        this.jugador.actualizar();
+        if(this.jugador){
+            this.jugador.actualizar();
+
+            socket.emit('actualizar',this.jugador);
+        }
+        for (const id in this.enemigos){
+        this.enemigos[id].actualizar();
+        }
+
         for (var i=0; i < this.disparosJugador.length; i++) {
             this.disparosJugador[i].actualizar();
         }
     }
 
     calcularScroll(){
+    if(!this.jugador){
+        return;
+    }
         // limite izquierda
         if ( this.jugador.x > 480 * 0.3) {
             if (this.jugador.x - this.scrollX < 480 * 0.3) {
@@ -77,8 +100,13 @@ class GameLayer extends Layer {
         for (var i=0; i < this.disparosJugador.length; i++) {
             this.disparosJugador[i].dibujar(this.scrollX);
         }
-
+        if(this.jugador){
         this.jugador.dibujar(this.scrollX);
+        }
+
+        for (const id in this.enemigos){
+                this.enemigos[id].dibujar(scrollX);
+                }
 
 
         // HUD
@@ -88,6 +116,9 @@ class GameLayer extends Layer {
 
 
     procesarControles( ){
+    if(!this.jugador){
+    return;
+    }
         // disparar
         if (  controles.disparo ){
             var nuevoDisparo = this.jugador.disparar();
@@ -150,12 +181,7 @@ class GameLayer extends Layer {
 
     cargarObjetoMapa(simbolo, x, y){
         switch(simbolo) {
-            case "1":
-                this.jugador = new Jugador(x, y);
-                // modificación para empezar a contar desde el suelo
-                this.jugador.y = this.jugador.y - this.jugador.alto/2;
-                this.espacio.agregarCuerpoDinamico(this.jugador);
-                break;
+
             case "#":
                 var bloque = new Bloque(imagenes.bloque_tierra, x,y);
                 bloque.y = bloque.y - bloque.alto/2;
@@ -166,5 +192,21 @@ class GameLayer extends Layer {
         }
     }
 
+
+    cargarJugador(x,y){
+                    this.jugador = new Jugador(x, y);
+                    // modificación para empezar a contar desde el suelo
+                    this.jugador.y = this.jugador.y - this.jugador.alto/2;
+                    this.espacio.agregarCuerpoDinamico(this.jugador);
+
+    }
+
+    cargarEnemigo(id,x,y){
+     const jugador = new Jugador(x, y);
+                        // modificación para empezar a contar desde el suelo
+                        jugador.y = jugador.y - jugador.alto/2;
+                        this.espacio.agregarCuerpoDinamico(jugador);
+                        this.enemigos[id] = jugador;
+    }
 
 }

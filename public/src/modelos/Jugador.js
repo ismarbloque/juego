@@ -37,6 +37,15 @@ class Jugador extends Modelo {
         this.animacion = this.aIdleDerecha;
     }
 
+    actualizarEstado({x,y,estado,orientacion,vx,vy}){
+        this.x=x;
+        this.y=y;
+        this.estado=estado;
+        this.orientacion=orientacion;
+        this.vx=vx;
+        this.vy=vy;
+    }
+
     actualizar(){
         this.animacion.actualizar();
 
