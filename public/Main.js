@@ -11,6 +11,8 @@ var controles = {};
 var layer;
 var gameLayer;
 
+const socket = io();
+
 
 // Inicio capas y bucle del juego
 function iniciarJuego() {
