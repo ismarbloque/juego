@@ -9,6 +9,14 @@ class GameLayer extends Layer {
         socket.on('iniciar',({jugador,jugadores}) => {
             console.log(jugador, jugadores)
         })
+
+        socket.on('nuevo jugador', jugador=>{
+            console.log(jugador);
+        })
+
+        socket.on('jugador desconectado', id=>{
+            console.log(id);
+        })
     }
 
     iniciar() {
