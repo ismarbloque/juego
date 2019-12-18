@@ -5,6 +5,12 @@ class GameLayer extends Layer {
         this.iniciar();
     }
 
+    registrarEventosDelServidor(){
+        socket.on('iniciar',({jugador,jugadores}) => {
+            console.log(jugador, jugadores)
+        })
+    }
+
     iniciar() {
         this.espacio = new Espacio(1);
 

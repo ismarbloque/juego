@@ -11,15 +11,17 @@ var controles = {};
 var layer;
 var gameLayer;
 
-const socket = io();
+const socket = io({autoConnect: false});
 
 
 // Inicio capas y bucle del juego
 function iniciarJuego() {
     gameLayer = new GameLayer();
+    gameLayer.registrarEventosDelServidor();
     layer = gameLayer;
 
     setInterval(loop, 1000 / 30);
+    socket.open();
 }
 
 

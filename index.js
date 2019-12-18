@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3000;
 app.use('/',express.static('public'));
 
 io.on('connection',socket => {
+    socket.emit('iniciar', {jugador: 'juagdor', jugadores:'jugadores'});
     console.log('Usuario conectado');
 });
 
